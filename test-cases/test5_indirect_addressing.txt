@@ -1,0 +1,9 @@
+        LDA #$DE
+        STA $33
+        LDA #$33
+        STA $30
+        LDX #$00
+        LDY #$01
+        LDA ($30,X)     ; Indirect X addressing
+        LDA ($30),Y     ; Indirect Y addressing
+        LDA $30

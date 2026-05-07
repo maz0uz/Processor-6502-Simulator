@@ -1,0 +1,230 @@
+# Test 1 - Arithmetic
+name: Test1_Arithmetic
+asm:
+  LDA #$05
+  CLC
+  ADC #$06
+  SEC
+  SBC #$02
+  LDX #$03
+  BRK
+  LDA #$05
+  CMP #$03
+  CPX #$02
+  CPY #$05
+  LDX #$03
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A9 05 18 69 06 38 E9 02 A2 03 00 A9 05 C9 03 E0 02 C0 05 A2 03 00 A9 01 E6 10 E8 E6 10 A2 03 00 A9 00 A2 00 00
+expected: 090502
+
+# Test 2 - Logic
+name: Test2_Logic
+asm:
+  LDA #$0F
+  AND #$03
+  LDX #$03
+  BRK
+  LDA #$0C
+  ORA #$03
+  LDX #$03
+  BRK
+  LDA #$0F
+  EOR $03
+  LDX #$03
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A9 0F 29 03 A2 03 00 A9 0C 09 03 A2 03 00 A9 0F 55 03 A2 03 00 A9 00 A2 00 00
+expected: 030F0C
+
+# Test 3 - Shifts
+name: Test3_Shifts
+asm:
+  LDA #$01
+  ASL A
+  LDX #$03
+  BRK
+  LDA #$80
+  LSR A
+  LDX #$03
+  BRK
+  LDA #$01
+  ROL A
+  LDX #$03
+  BRK
+  LDA #$02
+  ROR A
+  LDX #$03
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A9 01 0A A2 03 00 A9 80 4A A2 03 00 A9 01 2A A2 03 00 A9 02 6A A2 03 00 A9 00 A2 00 00
+expected: 02400201
+
+# Test 4 - Branches
+name: Test4_Branches
+asm:
+  LDA #$00
+  BEQ skip1
+  ADC #$06
+skip1:
+  LDX #$03
+  BRK
+  LDA #$01
+  BNE skip2
+  ADC #$06
+skip2:
+  LDX #$03
+  BRK
+  LDA #$80
+  BMI skip3
+  ADC #$06
+skip3:
+  LDX #$03
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A9 00 F0 02 A2 03 00 A9 01 D0 02 A2 03 00 A9 80 30 02 A2 03 00 A9 00 A2 00 00
+expected: 000180
+
+# Test 5 - Looping decrements
+name: Test5_DecrementLoop
+asm:
+  LDY #$05
+loop1:
+  TYA
+  LDX #$03
+  BRK
+  DEY
+  BNE loop1
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A0 05 98 A2 03 00 88 D0 F9 98 A2 03 00 88 D0 F9 98 A2 03 00 88 D0 F9 98 A2 03 00 88 D0 F9 A9 00 A2 00 00
+expected: 0504030201
+
+# Test 6 - Stack
+name: Test6_Stack
+asm:
+  LDA #$42
+  PHA
+  LDA #$00
+  PLA
+  LDX #$03
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A9 42 48 A2 03 00 A9 00 A2 00 00
+expected: 42
+
+# Test 7 - Print String
+name: Test7_PrintString
+asm:
+  ; Store pointer to string at $00/$01
+  LDA #$10
+  STA $00
+  LDA #$00
+  STA $01
+  LDX #$02
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+  ; String in zero page
+    LDA #$48
+    STA $10
+    LDA #$45
+    STA $11
+    LDA #$4C
+    STA $12
+    LDA #$4C
+    STA $13
+    LDA #$4F
+    STA $14
+    LDA #$20
+    STA $15
+    LDA #$36
+    STA $16
+    LDA #$35
+    STA $17
+    LDA #$30
+    STA $18
+    LDA #$32
+    STA $19
+    LDA #$21
+    STA $1A
+    LDA #$00
+    STA $1B
+bytes: A9 10 85 00 A9 00 85 01 A2 02 00 A9 00 A2 00 00 A9 48 85 10 A9 45 85 11 A9 4C 85 12 A9 4C 85 13 A9 4F 85 14 A9 00 85 15
+expected: Hello 6502!
+
+# Test 8 - Simple expression
+name: Test8_SimpleExpression
+asm:
+  LDA #$31
+  LDX #$01
+  BRK
+  LDA #$2B
+  LDX #$01
+  BRK
+  LDA #$31
+  LDX #$01
+  BRK
+  LDA #$3D
+  LDX #$01
+  BRK
+  LDA #$01
+  CLC
+  ADC #$01
+  LDX #$03
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A9 31 A2 01 00 A9 2B A2 01 00 A9 31 A2 01 00 A9 3D A2 01 00 A9 01 18 69 01 A2 03 00 A9 00 A2 00 00
+expected: 1+1=02
+
+# Test 9 - Shift multiply
+name: Test9_ShiftMultiply
+asm:
+  LDA #$05
+  ASL A
+  ASL A
+  ASL A
+  STA $10
+  LDA $10
+  LDX #$03
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A9 05 0A 0A 0A 85 10 A5 10 A2 03 00 A9 00 A2 00 00
+expected: 28
+
+# Test 10 - Branch test
+name: Test10_Branch
+asm:
+  LDA #$07
+  CMP #$05
+  BCC skip
+  LDA #$42
+  STA $10
+  JMP end
+skip:
+  LDA #$08
+end:
+  LDX #$01
+  LDA $10
+  BRK
+  LDA #$00
+  LDX #$00
+  BRK
+bytes: A9 07 C9 05 90 07 A9 42 85 10 4C 11 00 A2 01 A5 10 00 A9 00 A2 00 00
+expected: B

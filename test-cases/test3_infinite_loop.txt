@@ -1,0 +1,6 @@
+        LDX #$05         ; A = 5
+loop:   CPX #$06         ; Should check for end, but compares to wrong value!
+        BEQ exit         ; Will never branch, since A is never 6
+        DEX            ; Decrement A
+        JMP loop         ; Oops! If A < 0, loop unconditionally: infinite loop
+exit:   NOP              ; Would only reach if CMP ever passes (it never does)

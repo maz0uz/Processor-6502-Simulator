@@ -1,0 +1,6 @@
+SEC             ; Set carry
+CLV             ; Clear overflow
+LDA #$7F
+ADC #$01        ; Result = $80, should set overflow
+CLD             ; Clear decimal mode
+SED             ; Set decimal mode (should only affect some ops)

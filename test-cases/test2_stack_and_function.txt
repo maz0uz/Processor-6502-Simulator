@@ -1,0 +1,11 @@
+        LDA #$55
+        PHA             ; Push A
+        LDA #$AA
+        PHA
+        PLA             ; Pop to A, should get 0xAA
+        PLA             ; Pop again, should get 0x55
+        JSR subroutine
+        BRK
+subroutine:
+        LDA #00
+        RTS

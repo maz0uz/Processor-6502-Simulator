@@ -1,0 +1,12 @@
+; Test LDA, STA, TAX, TAY, TXA, TYA
+        LDA #$00        ; Load zero
+        STA $10         ; Store to memory
+        LDA #$FF        ; Load 255
+        STA $11
+        TAX             ; Transfer A to X
+        LDA #$AA
+        TAY             ; Transfer A to Y
+        TXA             ; Transfer X back to A
+        TYA             ; Transfer Y back to A
+        LDX #$03
+        BRK
